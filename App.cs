@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace AppsClassification
-{
+{ //
     public class App
     {
         string _name;
