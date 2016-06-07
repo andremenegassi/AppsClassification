@@ -13,8 +13,12 @@ namespace AppsClassification
         DirectoryInfo _dirContainer;
         DirectoryInfo[] _appsRepository;
 
+        //critério para seleção/classificação do framework híbrido.
         List<CriteriaSearch> _criteriasSearch = new List<CriteriaSearch>()
         {
+            // exemplos 
+            //new CriteriaSearch("nome do framework", "arquivo a ser localizado", new string[] {"string para busca 1 no arquivo", "string para busca 2 no arquivo" }),
+
             new CriteriaSearch("Apache Cordova", "config.xml", new string[] {"org.apache.cordova" }),
             new CriteriaSearch("Apache Cordova", "CordovaActivity.class", new string[] { }),
 
