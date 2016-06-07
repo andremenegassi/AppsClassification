@@ -150,7 +150,7 @@ namespace AppsClassification
 
         public void SalveClassification(List<App> apps)
         {
-            string pathFileSave = @"c:\lixos\teste.json";
+            string pathFileSave = @"c:\lixos\apps.json";
             TextWriter tw = new StreamWriter(pathFileSave, false);
             tw.WriteLine(JsonConvert.SerializeObject(apps));
             tw.Close();
