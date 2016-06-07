@@ -1,0 +1,156 @@
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace AppsClassification
+{
+    public class Classification
+    {
+        DirectoryInfo _dirContainer;
+        DirectoryInfo[] _appsRepository;
+
+        List<CriteriaSearch> _criteriasSearch = new List<CriteriaSearch>()
+        {
+            new CriteriaSearch("Apache Cordova", "config.xml", new string[] {"org.apache.cordova" }),
+            new CriteriaSearch("Apache Cordova", "CordovaActivity.class", new string[] { }),
+
+            new CriteriaSearch("Phonegap", "config.xml", new string[] {"phonegap.com"}),
+            new CriteriaSearch("Phonegap", "CordovaActivity.class", new string[] { }),
+
+            new CriteriaSearch("Enyo", "*.*", new string[] {"enyo.machine", "enyo.kind" }),
+
+            new CriteriaSearch("IBM Worklight", "config.xml", new string[] { "com.worklight.androidgap" }),
+            new CriteriaSearch("IBM Worklight", "WLDroidGap.class", new string[] { }),
+
+            new CriteriaSearch("IUI", "IUI.class", new string[] { }),
+
+            new CriteriaSearch("Kivy", "AndroidManifest.xml", new string[] {"PythonActivity" }),
+
+            new CriteriaSearch("Mobl", "MoblGap.class", new string[] { }),
+            new CriteriaSearch("Mobl", "*.mobl", new string[] { }),
+
+            new CriteriaSearch("MoSync", "AndroidManifest.xml", new string[] {"MoSyncService" }),
+
+            new CriteriaSearch("Next", "NextWebApp.class", new string[] { "nextwebapp" }),
+
+            new CriteriaSearch("Quick Connect", "*.*", new string[] {"QCNativeFooter", "qc.handleError" }),
+
+            new CriteriaSearch("Rho Mobile", "rho.dat", new string[] { }),
+
+            new CriteriaSearch("Sencha", "*.*", new string[] {"Ext.create", "Ext.application" }),
+
+            new CriteriaSearch("Titanium", "TitaniumModule.class", new string[] { }),
+            new CriteriaSearch("Titanium", "TiActivity.class", new string[] { }),
+
+        };
+
+
+        public Classification()
+        {
+            _dirContainer = new DirectoryInfo(@"C:\Users\André\Desktop\apps2");
+            _appsRepository = _dirContainer.GetDirectories();
+        }
+
+        public void Run()
+        {
+            List<DirectoryInfo> repositoryFilter1 = new List<DirectoryInfo>();
+            List<App> apps = new List<App>();
+
+            int i = 1;
+            //percorrendo o diretório contendo os repositórios das apps.
+            foreach (DirectoryInfo appRep in _appsRepository)
+            {
+                Console.Write("\n" + i + "  " + appRep.Name);
+
+               
+                App app = new App();
+                app.Name = appRep.Name;
+                app.FilesCSS = appRep.GetFiles("*.css", SearchOption.AllDirectories).Count();
+                app.FilesHTML = appRep.GetFiles("*.html", SearchOption.AllDirectories).Count();
+                app.FilesJS = appRep.GetFiles("*.js", SearchOption.AllDirectories).Count();
+
+                //para cada app/repositório é aplicado o critério de pesquisa referente ao nome do arquivo
+                foreach (CriteriaSearch criteria in _criteriasSearch)
+                {
+                    criteria.FileName = criteria.FileName.ToLower();
+
+                    //filtrando pelos arquivos do critério 
+                    var filesFiltered = from f in appRep.GetFiles(criteria.FileName, SearchOption.AllDirectories)
+                                        select f;
+
+                    bool findFile = false;
+                    bool findCriteria = false;
+
+                    if (filesFiltered.Count() > 0)
+                    {
+                        findFile = true;
+                        foreach (FileInfo f in filesFiltered)
+                        {
+                            //abrindo os arquivos filtrados e aplicando o segundo critério (busca por string dentro dos arquivos)
+                            try
+                            {
+                                string lines = "";
+                                using (StreamReader reader = f.OpenText())
+                                {
+                                    lines = reader.ReadToEnd();
+                                }
+                                lines = lines.ToLower();
+                                int findCriteriaCount = 0;
+                                foreach (string c in criteria.Criterias)
+                                {
+                                    if (lines.Contains(c.Trim().ToLower()))
+                                    {
+                                        findCriteriaCount++;
+                                    }
+                                }
+
+                                findCriteria = findCriteriaCount == criteria.Criterias.Length;
+                                if (findCriteria)
+                                {
+                                    break;
+                                }
+                            }
+                            catch (Exception ex) {
+
+                                Console.WriteLine(appRep.Name + "--> ERROR: " + ex.Message);
+                            }
+                        }
+                    }
+
+               
+                   
+                    if (findFile && findCriteria) //é híbrido
+                    {
+                        Console.Write(" ---> Hybrid");
+                        app.Framework = criteria.Framework;
+                        break;
+                    }
+                    else
+                    {
+                        app.Framework = "No hybrid";
+                    }
+
+
+                }
+
+                apps.Add(app);
+                SalveClassification(apps);
+
+                i++;
+            }
+        }
+
+        public void SalveClassification(List<App> apps)
+        {
+            string pathFileSave = @"c:\lixos\teste.json";
+            TextWriter tw = new StreamWriter(pathFileSave, false);
+            tw.WriteLine(JsonConvert.SerializeObject(apps));
+            tw.Close();
+        }
+
+    }
+}
