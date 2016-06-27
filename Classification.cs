@@ -16,30 +16,38 @@ namespace AppsClassification
         //critério para seleção/classificação do framework híbrido.
         List<CriteriaSearch> _criteriasSearch = new List<CriteriaSearch>()
         {
-            // exemplos 
+            // exemplo 
             //new CriteriaSearch("nome do framework", "arquivo a ser localizado", new string[] {"string para busca 1 no arquivo", "string para busca 2 no arquivo" }),
 
             new CriteriaSearch("Apache Cordova", "config.xml", new string[] {"org.apache.cordova" }),
             new CriteriaSearch("Apache Cordova", "CordovaActivity.class", new string[] { }),
+            new CriteriaSearch("Apache Cordova", "CordovaActivity.java", new string[] { }),
+            new CriteriaSearch("Apache Cordova", "*.*", new string[] {"cordova" }),
 
             new CriteriaSearch("Phonegap", "config.xml", new string[] {"phonegap.com"}),
             new CriteriaSearch("Phonegap", "CordovaActivity.class", new string[] { }),
+            new CriteriaSearch("Phonegap", "CordovaActivity.java", new string[] { }),
+            new CriteriaSearch("Phonegap", "*.*", new string[] {"phonegap.com"}),
 
             new CriteriaSearch("Enyo", "*.*", new string[] {"enyo.machine", "enyo.kind" }),
 
             new CriteriaSearch("IBM Worklight", "config.xml", new string[] { "com.worklight.androidgap" }),
             new CriteriaSearch("IBM Worklight", "WLDroidGap.class", new string[] { }),
+            new CriteriaSearch("IBM Worklight", "WLDroidGap.java", new string[] { }),
 
             new CriteriaSearch("IUI", "IUI.class", new string[] { }),
+            new CriteriaSearch("IUI", "IUI.java", new string[] { }),
 
             new CriteriaSearch("Kivy", "AndroidManifest.xml", new string[] {"PythonActivity" }),
 
             new CriteriaSearch("Mobl", "MoblGap.class", new string[] { }),
+            new CriteriaSearch("Mobl", "MoblGap.java", new string[] { }),
             new CriteriaSearch("Mobl", "*.mobl", new string[] { }),
 
             new CriteriaSearch("MoSync", "AndroidManifest.xml", new string[] {"MoSyncService" }),
 
             new CriteriaSearch("Next", "NextWebApp.class", new string[] { "nextwebapp" }),
+            new CriteriaSearch("Next", "NextWebApp.java", new string[] { "nextwebapp" }),
 
             new CriteriaSearch("Quick Connect", "*.*", new string[] {"QCNativeFooter", "qc.handleError" }),
 
@@ -49,13 +57,17 @@ namespace AppsClassification
 
             new CriteriaSearch("Titanium", "TitaniumModule.class", new string[] { }),
             new CriteriaSearch("Titanium", "TiActivity.class", new string[] { }),
+            new CriteriaSearch("Titanium", "TitaniumModule.java", new string[] { }),
+            new CriteriaSearch("Titanium", "TiActivity.java", new string[] { }),
+
+            new CriteriaSearch("HYBRID - FW NO IDENTIFY", "*.*", new string[] {"webview", "web_view", "NATIVE_APP" }),
 
         };
 
 
         public Classification()
         {
-            _dirContainer = new DirectoryInfo(@"C:\Users\André\Desktop\apps2");
+            _dirContainer = new DirectoryInfo(@"C:\apps");
             _appsRepository = _dirContainer.GetDirectories();
         }
 
