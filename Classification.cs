@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace AppsClassification
@@ -53,14 +54,17 @@ namespace AppsClassification
 
             new CriteriaSearch("Rho Mobile", "rho.dat", new string[] { }),
 
-            new CriteriaSearch("Sencha", "*.*", new string[] {"Ext.create", "Ext.application" }),
+            new CriteriaSearch("Sencha", "*.js", new string[] {"Ext.create", "Ext.application" }),
 
             new CriteriaSearch("Titanium", "TitaniumModule.class", new string[] { }),
             new CriteriaSearch("Titanium", "TiActivity.class", new string[] { }),
             new CriteriaSearch("Titanium", "TitaniumModule.java", new string[] { }),
             new CriteriaSearch("Titanium", "TiActivity.java", new string[] { }),
+            new CriteriaSearch("Titanium", "tiapp.xml", new string[] { }),
+            new CriteriaSearch("Titanium", "*.*", new string[] {"appcelerator" }),
 
-           // new CriteriaSearch("HYBRID - FW NO IDENTIFY", "*.*", new string[] {"webview", "web_view", "NATIVE_APP" }),
+
+            new CriteriaSearch("USE WEBVIEW", "*.*", new string[] {"android.webkit.WebView", "webview", "web_view", "NATIVE_APP" }),
 
         };
 
@@ -104,6 +108,7 @@ namespace AppsClassification
                     if (filesFiltered.Count() > 0)
                     {
                         findFile = true;
+                        int findCriteriaCount = 0;
                         foreach (FileInfo f in filesFiltered)
                         {
 
@@ -116,7 +121,7 @@ namespace AppsClassification
                                     lines = reader.ReadToEnd();
                                 }
                                 lines = lines.ToLower();
-                                int findCriteriaCount = 0;
+                                //int findCriteriaCount = 0;
                                 foreach (string c in criteria.Criterias)
                                 {
                                     if (lines.Contains(c.Trim().ToLower()))
@@ -125,18 +130,29 @@ namespace AppsClassification
                                     }
                                 }
 
-                                findCriteria = findCriteriaCount > 0 && (app.FilesCSS + app.FilesHTML + app.FilesJS) > 0;
+                                //findCriteria = findCriteriaCount > 0 && (app.FilesCSS + app.FilesHTML + app.FilesJS) > 0;
 
-                                //findCriteria = findCriteriaCount == criteria.Criterias.Length;
-                                if (findCriteria)
-                                {
-                                    break;
-                                }
+                                ////findCriteria = findCriteriaCount == criteria.Criterias.Length;
+                                //if (findCriteria)
+                                //{
+                                //    app.Framework += " - " + criteria.Framework;
+                                //    //break;
+                                //}
                             }
                             catch (Exception ex) {
 
                                 Console.WriteLine(appRep.Name + "--> ERROR: " + ex.Message);
                             }
+                        }
+
+
+                        findCriteria = findCriteriaCount > 0 && (app.FilesCSS + app.FilesHTML + app.FilesJS) > 0;
+
+                        //findCriteria = findCriteriaCount == criteria.Criterias.Length;
+                        if (findCriteria)
+                        {
+                            app.Framework += " - " + criteria.Framework;
+                            //break;
                         }
                     }
 
@@ -144,8 +160,8 @@ namespace AppsClassification
                    
                     if (findFile && findCriteria) //é híbrido
                     {
-                        Console.Write(" ---> Hybrid");
-                        app.Framework = criteria.Framework;
+                        Console.Write(" ---------------------> Hybrid");
+                        //app.Framework = criteria.Framework;
                         break;
                     }
                     else
