@@ -64,7 +64,7 @@ namespace AppsClassification
             new CriteriaSearch("Titanium", "*.*", new string[] {"appcelerator" }),
 
 
-            new CriteriaSearch("USE WEBVIEW", "*.*", new string[] {"android.webkit.WebView", "webview", "web_view", "NATIVE_APP" }),
+            new CriteriaSearch("USE WEBVIEW", "*.*", new string[] {"android.webkit.WebView", "android.permission.INTERNET" }), //, "webview", "web_view", "NATIVE_APP"
 
         };
 
